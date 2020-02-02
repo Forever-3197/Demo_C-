@@ -32,7 +32,8 @@ int main() {
 //第三种方法
 //Vec<int, 3> vi(12, 23, 44);
 //cout << vi;
-Mat m = imread("./logo.png");
+Mat m = imread("./mm.jpg");
+resize(m, m, Size(),0.5,0.5);//我长宽都变为原来的0.5倍
 /*
     for (int i = 0;i < 100;i++) {
         for (int j = 0;j < 100;j++) {
@@ -71,7 +72,23 @@ Mat m = imread("./logo.png");
     */
 
 namedWindow("Image");
-imshow("Image",m);
+imshow("原始图像",m);
+
+Mat grad_x, grad_y;
+Mat abs_grad_x, abs_grad_y, m2;
+//求x方向梯度
+    Sobel(m, grad_x, CV_16S, 1, 0, 3, 1, 1, BORDER_DEFAULT);
+    convertScaleAbs(grad_x, abs_grad_x);
+    imshow("【效果图】X方向Sobel", abs_grad_x);
+
+    //求y方向梯度
+    Sobel(m, grad_y, CV_16S, 0, 1, 3, 1, 1, BORDER_DEFAULT);
+    convertScaleAbs(grad_y, abs_grad_y);
+    imshow("【效果图】Y方向Sobel", abs_grad_y);
+
+    //合并梯度（近似）
+    addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, m2);
+    imshow("【效果图】整体方向Sobel", m2);
 
 Mat src1 = (Mat_<uchar>(2, 3) << 11, 22, 33, 44, 55, 100);
 Mat src2 = (Mat_<float>(2, 3) << 2, 2, 2, 2, 2, 3);
